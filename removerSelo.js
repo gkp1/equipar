@@ -24,15 +24,16 @@ function removeTextFromFiles(dir) {
 // removeTextFromFiles(directory);
 
 function replaceText(dir) {
+  let count = 0;
+  let replaceCount = 0;
   fs.readdirSync(dir).forEach((file) => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-
     if (stat.isDirectory()) {
-      removeTextFromFiles(filePath);
+      replaceText(filePath);
     } else {
       let fileContent = fs.readFileSync(filePath, "utf8");
-
+      count++;
       if (fileContent.includes(`<div class="social">`)) {
         fileContent = fileContent.replace(
           `<div class="social">`,
@@ -45,10 +46,12 @@ function replaceText(dir) {
               ><image src="imagens/icones/wa-icon-15px-white.png"></image> 17 <strong>99772-4429</strong></a
             >`
         );
+        replaceCount++;
         fs.writeFileSync(filePath, fileContent);
       }
     }
   });
+  console.log(`Searched ${count} files. Found and replaced ${replaceCount} times.`);
 }
 replaceText(directory);
 
